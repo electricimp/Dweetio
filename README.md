@@ -9,9 +9,7 @@ This API wraps the dweet.io API for non-locked Things.
 
 All methods (except *stream()*) have an optional callback parameter. If a callback function is supplied, the request will be made asynchronously, and the callback will be triggered once the request is fulfilled. The callback function must inlcude a single parameter into which will be passed an a Squirrel table containing three fields: *statuscode*, *headers* and *body*. If a callback is not supplied, the request will be made synchronously and the method will return the same table outlined above.
 
-## Constructor
-
-## DweetIO(*[baseURL]*)
+## Constructor: DweetIO(*[baseURL]*)
 
 Call the constructor to instantiate a new Dweet.IO client. The base URL can be overridden if required, but if no *baseUrl* is passed, the default ```https://dweet.io``` will be used.
 
