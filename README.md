@@ -3,7 +3,7 @@
 
 This API wraps the dweet.io API for non-locked Things.
 
-## Class Usahe
+## Class Usage
 
 ## Callbacks
 
