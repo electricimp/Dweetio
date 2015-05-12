@@ -3,6 +3,8 @@
 
 This API wraps the dweet.io API for non-locked Things.
 
+**To add this library to your project, add** `#require "Dweetio.class.nut:1.0.0"` **to the top of your agent code**
+
 ## Class Usage
 
 ## Callbacks
