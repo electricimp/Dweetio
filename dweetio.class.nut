@@ -45,7 +45,7 @@ class DweetIO {
 
     function stream(thing, callback) {
         if (callback == null) {
-            server.error("Dweetion steam() method requires a callback function");
+            server.error("Dweetio stream() method requires a callback function");
             return;
         }
         
