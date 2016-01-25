@@ -10,7 +10,7 @@
 
 Call the constructor to instantiate a new Dweet.IO client. It has a single, optional parameter: *baseURL*, the URL to which the data will be sent. The default is `https://dweet.io`.
 
-```
+```squirrel
 client <- DweetIO();
 ```
 
@@ -24,14 +24,14 @@ All of the library’s methods except *stream()* have an optional callback funct
 
 The *dweet()* method can be used to send a dweet.
 
-```
+```squirrel
 // Asynchronous dweet
 client.dweet("myThing", {"field1" : 1, "field2" : "test"}, function(response) {
     server.log(response.statuscode + ": " + response.body);
 })
 ```
 
-```
+```squirrel
 // Synchronous dweet
 local response = client.dweet("myThing", {"field1" : 1, "field2" : "test"});
 server.log(response.statuscode + ": " + response.body);
@@ -41,7 +41,7 @@ server.log(response.statuscode + ": " + response.body);
 
 The *getLatest()* method returns the most recent dweet from the specified *thing*:
 
-```
+```squirrel
 client.get("myThing", function(response) {
     if (response.statuscode != 200) {
 	    server.log("Error getting dweet: " + response.statuscode + " - " + response.body);
@@ -56,7 +56,7 @@ client.get("myThing", function(response) {
 
 The *getHistory()* method will return all of the most recent 24 hours’ dweets to the specified thing (up to a maximum of 500 dweets).
 
-```
+```squirrel
 client.getHistory("myThing", function(response) {
     if (response.statuscode != 200) {
 	    server.log("Error getting dweets: " + response.statuscode + " - " + response.body);
@@ -71,7 +71,7 @@ client.getHistory("myThing", function(response) {
 
 The *stream()* method opens a stream to the Dweet service and will execute the callback whenever new information is available for the specified *thing*. Unlike the library’s other methods, *stream()* method **must** be supplied with a callback and the stream callback is triggered with the *thing*’s data not a response table:
 
-```
+```squirrel
 client.stream("myThing", function(thing) {
     if ("thing" in thing) {
 	    device.send("status", thing.content);
