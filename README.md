@@ -1,89 +1,84 @@
-# dweet.io
-[dweet.io](http://dweet.io) is a “rediculously simple messaging (and alerts)” system for the Internet of Things.
+# Dweetio
 
-This API wraps the dweet.io API for non-locked Things.
+[Dweet.io](http://dweet.io) describes itself as a “ridiculously simple messaging (and alerts)” system for the Internet of Things, and it really is very simple to use &ndash; especially with the library. It wraps the dweet.io API for public Things.
+
+**To add this library to your project, add** `#require "Dweetio.class.nut:1.0.1"` **to the top of your agent code**
 
 ## Class Usage
 
-## Callbacks
+### Constructor: DweetIO(*[baseURL]*)
 
-All methods (except *stream()*) have an optional callback parameter. If a callback function is supplied, the request will be made asynchronously, and the callback will be triggered once the request is fulfilled. The callback function must inlcude a single parameter into which will be passed an a Squirrel table containing three fields: *statuscode*, *headers* and *body*. If a callback is not supplied, the request will be made synchronously and the method will return the same table outlined above.
+Call the constructor to instantiate a new Dweet.IO client. It has a single, optional parameter: *baseURL*, the URL to which the data will be sent. The default is `https://dweet.io`.
 
-## Constructor: DweetIO(*[baseURL]*)
-
-Call the constructor to instantiate a new Dweet.IO client. The base URL can be overridden if required, but if no *baseUrl* is passed, the default ```https://dweet.io``` will be used.
-
-```squirrel
-client <- DweetIO()
+```
+client <- DweetIO();
 ```
 
 ## Class Methods
 
-## dweet(*thing, data, [callback]*)
+### Callbacks
+
+All of the library’s methods except *stream()* have an optional callback function parameter. If a callback function is supplied, the request will be made asynchronously, and the callback will be triggered once the request is fulfilled. The callback function must include a single parameter of its own into which will be passed a table containing three fields: *statuscode*, *headers* and *body*. If a callback is not supplied, the request will be made synchronously and the method will return the same table outlined above.
+
+### dweet(*thing, data[, callback]*)
 
 The *dweet()* method can be used to send a dweet.
 
-```sqiurrel
+```
 // Asynchronous dweet
-
-client.dweet("myThing", { "field1": 1, "field2": "test" }, function(resp) {
-    server.log(resp.statuscode + ": " + resp.body)
+client.dweet("myThing", {"field1" : 1, "field2" : "test"}, function(response) {
+    server.log(response.statuscode + ": " + response.body);
 })
+```
 
+```
 // Synchronous dweet
-
-local resp = client.dweet("myThing", { "field1": 1, "field2": "test" })
+local response = client.dweet("myThing", {"field1" : 1, "field2" : "test"});
+server.log(response.statuscode + ": " + response.body);
 ```
 
-## get(*thing, [callback]*)
+### getLatest(*thing[, callback]*)
 
-The *get()* method returns the most recent dweet from the specified *thing*:
+The *getLatest()* method returns the most recent dweet from the specified *thing*:
 
-```squirrel
+```
 client.get("myThing", function(response) {
-    if (response.statuscode != 200) 
-    {
-        server.log("Error getting dweet: " + response.statuscode + " - " + response.body)
-        return
+    if (response.statuscode != 200) {
+	    server.log("Error getting dweet: " + response.statuscode + " - " + response.body);
+	    return;
     }
 
-    local data = http.jsondecode(response.body)["with"][0]
-    
-    // Do something with the data
-    
-    . . .
-})
+    local data = http.jsondecode(response.body)["with"][0];
+});
 ```
 
-## getHistory(*thing, [callback]*)
+### getHistory(*thing[, callback]*)
 
-The *getHistory()* method will return up to the last 500 dweets to the specified thing over a 24-hour period:
+The *getHistory()* method will return all of the most recent 24 hours’ dweets to the specified thing (up to a maximum of 500 dweets).
 
-```squirrel
+```
 client.getHistory("myThing", function(response) {
-    if (response.statuscode != 200) 
-    {
-        server.log("Error getting dweets: " + response.statuscode + " - " + response.body)
-        return
+    if (response.statuscode != 200) {
+	    server.log("Error getting dweets: " + response.statuscode + " - " + response.body);
+	    return;
     }
 
-    local data = http.jsondecode(response.body)["with"]
-})
+    local data = http.jsondecode(response.body)["with"];
+});
 ```
 
-## stream(*thing, callback*)
+### stream(*thing, callback*)
 
-The *stream()* method opens a stream to the dweet service and will execute the callback whenever new information is available for the specified *thing*. The *stream()* method **must** be supplied with a callback, and unlike the other methods in this class, the stream callback is triggered with the *thing*’s data not a response table:
+The *stream()* method opens a stream to the Dweet service and will execute the callback whenever new information is available for the specified *thing*. Unlike the library’s other methods, *stream()* method **must** be supplied with a callback and the stream callback is triggered with the *thing*’s data not a response table:
 
-```squirrel
+```
 client.stream("myThing", function(thing) {
-    if ("status" in thing) 
-    {
-        device.send("status", thing.status)
+    if ("thing" in thing) {
+	    device.send("status", thing.content);
     }
-})
+});
 ```
 
 ## License
 
-The dweet.io library is licensed under the [MIT License](./LICENSE).
+The Dweetio library is licensed under the [MIT License](./LICENSE).
