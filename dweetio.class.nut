@@ -1,6 +1,6 @@
 class DweetIO {
     
-    static version = [1.0.1];
+    static version = [1,0,1];
     
     _baseUrl = null;
     _streamingRequests = null;
