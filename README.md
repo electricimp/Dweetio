@@ -73,6 +73,11 @@ The *stream()* method opens a stream to the Dweet service and will execute the c
 
 ```squirrel
 client.stream("myThing", function(thing) {
+    // make sure thing is a table
+    if (typeof thing == "string") {
+        thing = http.jsondecode(thing);
+    }
+
     if ("thing" in thing) {
 	    device.send("status", thing.content);
     }
