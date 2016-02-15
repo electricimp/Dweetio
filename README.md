@@ -42,7 +42,7 @@ server.log(response.statuscode + ": " + response.body);
 The *getLatest()* method returns the most recent dweet from the specified *thing*:
 
 ```squirrel
-client.get("myThing", function(response) {
+client.getLatest("myThing", function(response) {
     if (response.statuscode != 200) {
 	    server.log("Error getting dweet: " + response.statuscode + " - " + response.body);
 	    return;
