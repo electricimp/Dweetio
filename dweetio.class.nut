@@ -1,10 +1,16 @@
 class DweetIO {
+    
+    static version = [1,0,1];
+    
     _baseUrl = null;
     _streamingRequests = null;
 
     function constructor(baseUrl = null) {
-        if (baseUrl == null) _baseUrl = "https://dweet.io";
-        else _baseUrl = baseUrl;
+        if (baseUrl == null || (typeof baseUrl != "string")) {
+            _baseUrl = "https://dweet.io";
+        } else {
+            _baseUrl = baseUrl;
+        }
 
         _streamingRequests = {};
     }
@@ -15,7 +21,6 @@ class DweetIO {
             "content-type": "application/json"
         };
         local dataString = http.jsonencode(data);
-
         local req = http.post(url, headers, dataString);
         return _request(req, callback);
     }
@@ -25,7 +30,6 @@ class DweetIO {
         local headers = {
             "content-type": "application/json"
         };
-
         local req = http.get(url, headers);
         return _request(req, callback);
     }
@@ -35,41 +39,47 @@ class DweetIO {
         local headers = {
             "content-type": "application/json"
         };
-
         local req = http.get(url, headers);
         return _request(req, callback);
     }
 
     function stream(thing, callback) {
+        if (callback == null) {
+            server.error("Dweetio stream() method requires a callback function");
+            return;
+        }
+        
         server.log("Opening stream for: " + thing);
 
         local url = format("%s/listen/for/dweets/from/%s", _baseUrl, thing);
         local headers = {
             "content-type": "application/json"
         };
-
         local request = http.get(url, headers);
+        
         if (thing in _streamingRequests) {
             _streamingRequests[thing] = null;
         } else {
             _streamingRequests[thing] <- null;
         }
+        
         _streamingRequests[thing] = request.sendasync(
-
+            // Function executed on completion of request
             function(resp) {
-                // connection timeout
+                // Connection timeout
                 if (resp.statuscode == 28 || resp.statuscode == 200) {
                     server.log("Reconnecting...")
-                    stream(searchTerms, onTweet, onError);
+                    stream(thing, callback);
                 } else {
                     server.log("Stream unexpectedly closed: " + resp.statuscode + " - " + resp.body);
                 }
             }.bindenv(this),
-
+            
+            // Function executed on completion of long-polling request
             function(body) {
                 local dataLines = split(body, "\n\r");
                 if (dataLines.len() != 2) {
-                    server.log("Something weird happened...");
+                    server.log("Unknown error occurred");
                     server.log(body);
                 } else {
                     local data = http.jsondecode(dataLines[1]);
@@ -88,4 +98,3 @@ class DweetIO {
         }
     }
 }
-
