@@ -44,8 +44,8 @@ The *getLatest()* method returns the most recent dweet from the specified *thing
 ```squirrel
 client.getLatest("myThing", function(response) {
     if (response.statuscode != 200) {
-	    server.log("Error getting dweet: " + response.statuscode + " - " + response.body);
-	    return;
+      server.log("Error getting dweet: " + response.statuscode + " - " + response.body);
+      return;
     }
 
     local data = http.jsondecode(response.body)["with"][0];
@@ -59,8 +59,8 @@ The *getHistory()* method will return all of the most recent 24 hours’ dweets 
 ```squirrel
 client.getHistory("myThing", function(response) {
     if (response.statuscode != 200) {
-	    server.log("Error getting dweets: " + response.statuscode + " - " + response.body);
-	    return;
+      server.log("Error getting dweets: " + response.statuscode + " - " + response.body);
+      return;
     }
 
     local data = http.jsondecode(response.body)["with"];
@@ -79,7 +79,7 @@ client.stream("myThing", function(thing) {
     }
 
     if ("thing" in thing) {
-	    device.send("status", thing.content);
+      device.send("status", thing.content);
     }
 });
 ```
